@@ -1,0 +1,44 @@
+body{
+
+    background-image: url("chateau.png");
+   background-size: cover; /* Ajustement de la taille pour couvrir la totalité du body */
+    text-align: center;
+}
+#titre1{
+    font-family: "Forte";
+    text-align: center;
+   position: relative;
+    top: 90px;
+    color: aliceblue;
+    font-size: 60px;;
+}
+#titre2{
+    font-family: "Forte";
+    text-align: center;
+   position: relative;
+    top: 100px;
+    color: aliceblue;
+    font-size: 40px;
+    text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.5);
+}
+table {
+    border-collapse: collapse;
+  text-align: center;
+  position: relative;
+  top: 500px; /* Adjust as needed */
+  left: 50%; /* Adjust as needed */
+  transform: translateX(-50%); /* Center horizontally */
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5); /* Black shadow with 10px blur */
+  display: none; /* Initially hide the table */
+  }
+
+  .square { 
+    width: 130px; 
+    height: 80px; 
+    border: 2px solid #8B4513			; 
+    text-align: center;
+    position: relative;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+ 
