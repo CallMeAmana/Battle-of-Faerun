@@ -3,34 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="home.css">
+    <title>Battle of Faeroun</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 id="titre1"> welcome</h1>
+    <h1 id="titre1">welcome</h1>
     <h2 id="titre2">click to start</h2>
-    <table id="myTable">
+    <table id="myTable" style="display: none;">
         <tr>
-          <td class="square" id="square-0"></td>
-          <td class="square" id="square-1"></td>
-          <td class="square" id="square-2"></td>
-          <td class="square" id="square-3"></td>
-          <td class="square" id="square-4"></td>
+            <td class="square" id="square-0"></td>
+            <td class="square" id="square-1"></td>
+            <td class="square" id="square-2"></td>
+            <td class="square" id="square-3"></td>
+            <td class="square" id="square-4"></td>
         </tr>
-      </table>
-      <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var titre2 = document.getElementById("titre2");
-            var titre1 = document.getElementById("titre1");
-            var table = document.getElementById("myTable");
-      
-            titre2.addEventListener("click", function() {
-              table.style.display = "table"; // Show the table
-              titre1.style.display = "none"; // Hide the "click to start" heading
-              titre2.style.display = "none"; // Hide the "click to start" heading
-            });
-          });
-      </script>
-</body>
+    </table>
+    <div id="chefnainImage">
+        <img src="images/red.png" alt="Nain" class="icon">
+    </div>
+    <button onclick="afficherImagesrouge()" id="btn1" style="display: none;">Entrainer</button>
+    <button onclick="afficherImagesbleu()" id="btn2" style="display: none;">Entrainer</button>
 
+    <!-- Modal for training red warriors -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fermerModal('myModal')">&times;</span>
+            <h1 style="text-align: center; color:brown">Entraîner les guerriers rouges</h1>
+            <h2>Nombre de ressources : <span id="resourceCountRed">3</span></h2>
+            <div class="image-container">
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new ChefNain(), 'Rouge')">
+                        <img src="images/red.png" alt="Chef Nain" class="icon">
+                    </button>
+                    <label>Chef Nain (3 ressources)</label>
+                </div>
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new Nain(), 'Rouge')">
+                        <img src="images/4.png" alt="Nain" class="icon">
+                    </button>
+                    <label>Nain (1 ressource)</label>
+                </div>
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new ChefElfe(), 'Rouge')">
+                        <img src="images/8.png" alt="Chef Elfe" class="icon">
+                    </button>
+                    <label>Chef Elfe (4 ressources)</label>
+                </div>
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new Elfe(), 'Rouge')">
+                        <img src="images/6.png" alt="Elfe" class="icon">
+                    </button>
+                    <label>Elfe (2 ressources)</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for training blue warriors -->
+    <div id="myModal1" class="modal1">
+        <div class="modal-content">
+            <span class="close" onclick="fermerModal('myModal1')">&times;</span>
+            <h1 style="text-align: center; color:blue">Entraîner les guerriers bleus</h1>
+            <h2>Nombre de ressources : <span id="resourceCountBlue">3</span></h2>
+            <div class="image-container">
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new ChefNain(), 'Bleu')">
+                        <img src="images/3.png" alt="Chef Nain" class="icon">
+                    </button>
+                    <label>Chef Nain (3 ressources)</label>
+                </div>
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new Nain(), 'Bleu')">
+                        <img src="images/5.png" alt="Nain" class="icon">
+                    </button>
+                    <label>Nain (1 ressource)</label>
+                </div>
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new ChefElfe(), 'Bleu')">
+                        <img src="images/9.png" alt="Chef Elfe" class="icon">
+                    </button>
+                    <label>Chef Elfe (4 ressources)</label>
+                </div>
+                <div class="image-label-container">
+                    <button onclick="trainWarrior(new Elfe(), 'Bleu')">
+                        <img src="images/7.png" alt="Elfe" class="icon">
+                    </button>
+                    <label>Elfe (2 ressources)</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
