@@ -3,6 +3,7 @@ body{
     background-image: url("images/chateau.png");
    background-size: cover; /* Ajustement de la taille pour couvrir la totalité du body */
     text-align: center;
+    background-repeat: no-repeat;
 }
 #titre1{
     font-family: "Forte";
@@ -40,11 +41,29 @@ table {
     position: relative;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
   }
+ 
   .modal {
     display: none; /* Cacher le modal par défaut */
-    position: relative;
-    bottom:180px;
-  }
+    position: fixed; /* Positionner le modal de manière fixe */
+    top: 50%; /* Centrer verticalement */
+    left: 0; /* Aligner à droite */
+    transform: translateY(-50%); /* Centrer verticalement */
+    width: 300px; /* Largeur du modal */
+   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre pour le modal */
+    padding: 30px;
+    z-index: 1000; /* Assurez-vous que le modal est au-dessus d'autres éléments */
+}
+
+.modal .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
   .modal1 {
     display: none; /* Cacher le modal par défaut */
     position: relative;
@@ -91,7 +110,7 @@ table {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 39%; /* Réduire la largeur du modal */
+    width: 90%; /* Réduire la largeur du modal */
    
     text-align: center; /* Centrer le contenu horizontalement */
     overflow-y: auto; /* Activer le défilement vertical si nécessaire */
