@@ -33,16 +33,35 @@ body{
     font-size: 40px;
     text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.5);
 }
-table {
-    border-collapse: collapse;
+#myTable {
+  border-collapse: collapse;
   text-align: center;
   position: relative;
-  top: 500px; /* Adjust as needed */
-  left: 50%; /* Adjust as needed */
-  transform: translateX(-50%); /* Center horizontally */
-  box-shadow: -1px 0px 20px 4px rgb(255, 255, 255);/* Black shadow with 10px blur */
-  
-  }
+  top: 590px; /* Ajustez selon les besoins */
+  left: 32%; /* Ajustez selon les besoins */
+  box-shadow: -1px 0px 20px 4px rgb(255, 255, 255);/* Ombre noire avec 10px de flou */
+  transform: rotate(51deg) skew(0deg, -51deg);
+}
+
+#myTable .icon {
+  transform: rotateX(319deg) rotateY(20deg) skew(0deg, 53deg) rotateZ(320deg); /* Transformation inverse pour les images des guerriers */
+  position: relative; /* Position relative pour permettre le positionnement relatif des guerriers */
+  display: inline-block; /* Affichage en ligne pour empêcher la superposition */
+  margin: 0; /* Supprime les marges pour un alignement précis */
+  padding: 0; /* Supprime les rembourrages */
+}
+
+.square {
+  width: 100px;
+  height: 130px;
+  border: 2px solid #000000; 
+  text-align: center;
+  position: relative;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+
+ 
   #btn-jeux{
  
     background-color: #fefefe		;
@@ -54,15 +73,7 @@ table {
     font-family: 'Times New Roman', Times, serif, sans-serif;
   }
 
-  .square { 
-    width: 150px; 
-    height: 100px; 
-    border: 2px solid #000000			; 
-    text-align: center;
-    position: relative;
-    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
-  }
- 
+  
   .modal {
     display: none; /* Cacher le modal par défaut */
     position: fixed; /* Positionner le modal de manière fixe */

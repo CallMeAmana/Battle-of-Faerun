@@ -157,12 +157,13 @@ function displayWarriors() {
                         img.src = '';
                 }
                 img.alt = warrior.nom;
-                img.classList.add('icon');
+                img.classList.add('icon', 'warrior-image'); // Ajoutez une classe spécifique pour les images des guerriers
                 square.appendChild(img);
             }
         });
     }
 }
+
 
 // Ajoutez une variable pour garder une trace de l'état du jeu
 
@@ -172,6 +173,17 @@ function playTurn() {
     const redsReady = warriors['Rouge'].some(warrior => warrior.ready);
 
     if (!gameStarted) {
+        if (!bluesReady && !redsReady) {
+            Toastify({
+                text: "Les guerriers des deux châteaux ne sont pas prêts à battre !",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "center"
+            }).showToast();
+            return;
+        }
+
         if (!bluesReady) {
             Toastify({
                 text: "Les guerriers du château Bleu ne sont pas prêts à battre !",
@@ -262,6 +274,7 @@ function playTurn() {
         }
     }
 }
+
 
 
 
