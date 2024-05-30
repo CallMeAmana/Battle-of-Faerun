@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battle of Faeroun</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
     <audio id="myAudio" src="musique.mp3"></audio>
     <button id="stopButton">
-        <img id="mute" src="images/mute.png">
+        <img id="mute" src="images/mute.png" style="cursor: pointer;">
+        
     </button>
     <button onclick="playTurn()" id="btn-jeux" >Jouer un tour </button>
     <table id="myTable">

@@ -6,11 +6,13 @@ body{
     background-repeat: no-repeat;
 }
 #mute{
-width: 20px;
-height: 20px;
-
-
-}
+  width: 15px;
+  height: 15px;
+  }
+  #stopButton{
+    position: relative;
+    left: 700px;
+  }
 #stopButton{
   position: relative;
   right: 50px;
