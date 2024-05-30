@@ -1,0 +1,24 @@
+body {
+  background-image: url("images/devel.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+}
+
+  #titre1{
+    font-family: "Forte";
+    text-align: center;
+   position: relative;
+    top: 90px;
+    color: black;
+    font-size: 60px;;
+}
+#titre2{
+    font-family: "Forte";
+    text-align: center;
+   position: relative;
+    top: 100px;
+    color: black;
+    font-size: 40px;
+    text-shadow: 2px 3px 4px rgba(255, 255, 255, 0.5);
+}

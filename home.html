@@ -7,9 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 id="titre1">welcome</h1>
-    <h2 id="titre2">click to start</h2>
-    <table id="myTable" style="display: none;">
+    <audio id="myAudio" src="musique.mp3"></audio>
+    <button id="stopButton">
+        <img id="mute" src="images/mute.png">
+    </button>
+    <button onclick="playTurn()" id="btn-jeux" >Jouer un tour </button>
+    <table id="myTable">
         <tr>
             <td class="square" id="square-0"></td>
             <td class="square" id="square-1"></td>
@@ -21,8 +24,8 @@
     <div id="chefnainImage">
         <img src="images/red.png" alt="Nain" class="icon">
     </div>
-    <button onclick="afficherImagesrouge()" id="btn1" style="display: none;">Entrainer</button>
-    <button onclick="afficherImagesbleu()" id="btn2" style="display: none;">Entrainer</button>
+    <button onclick="afficherImagesrouge()" id="btn1" >Entrainer</button>
+    <button onclick="afficherImagesbleu()" id="btn2" >Entrainer</button>
 
     <!-- Modal for training red warriors -->
     <div id="myModal" class="modal">
