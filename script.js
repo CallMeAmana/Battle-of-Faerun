@@ -1,6 +1,7 @@
+// Obtenez l'élément audio
 const audio = document.getElementById("myAudio");
 
-
+// Classe de base Guerrier
 class Guerrier {
     constructor(nom, force, pv, coutEntrainement, image) {
         this.nom = nom;
@@ -9,7 +10,7 @@ class Guerrier {
         this.coutEntrainement = coutEntrainement;
         this.image = image;
         this.ready = false;
-        this.position = null;
+        this.position = null; // Position initiale définie à null
     }
 
     attaquer(adversaire) {
@@ -30,7 +31,7 @@ class Guerrier {
     }
 }
 
-// Subclasses
+// Sous-classes
 class Nain extends Guerrier {
     constructor() {
         super("Nain", 10, 100, 1, 'images/4.png');
@@ -69,10 +70,7 @@ const warriors = {
     Bleu: []
 };
 
-const resources = {
-    Rouge: 3,
-    Bleu: 3
-};
+
 
 document.addEventListener("DOMContentLoaded", function () {
     var titre2 = document.getElementById("titre2");
@@ -82,18 +80,21 @@ document.addEventListener("DOMContentLoaded", function () {
     var btn2 = document.getElementById("btn2");
     var btnJeux = document.getElementById("btn-jeux");
 
-    titre2.addEventListener("click", function () {
-        table.style.display = "table";
-        titre1.style.display = "none";
-        titre2.style.display = "none";
-        btn1.style.display = "block";
-        btn2.style.display = "block";
-        btnJeux.style.display = "block";
-    });
+    if (titre2 && table && titre1 && btn1 && btn2 && btnJeux) {
+        titre2.addEventListener("click", function () {
+            table.style.display = "table";
+            titre1.style.display = "none";
+            titre2.style.display = "none";
+            btn1.style.display = "block";
+            btn2.style.display = "block";
+            btnJeux.style.display = "block";
+        });
 
-    btnJeux.addEventListener("click", () => setInterval(playTurn, 1000)); // Ajout de setInterval pour exécuter playTurn à chaque seconde
+        btnJeux.addEventListener("click", () => setInterval(playTurn, 1000));
+    }
 });
 
+// Fonctions d'affichage des images et des modales
 function afficherImagesrouge() {
     openModal('myModal');
 }
@@ -110,70 +111,80 @@ function fermerModal(modalId) {
     document.getElementById(modalId).style.display = "none";
 }
 
-function trainWarrior(warrior, team) {
-    const resourceCountElement = document.getElementById(team === 'Rouge' ? 'resourceCountRed' : 'resourceCountBlue');
-    let resourceCount = parseInt(resourceCountElement.textContent);
-
-    if (resourceCount >= warrior.coutEntrainement) {
-        resourceCount -= warrior.coutEntrainement;
-        resourceCountElement.textContent = resourceCount;
-
-        warrior.ready = true;
-        warrior.position = team === 'Rouge' ? 0 : 4;
-        warriors[team].push(warrior);
-
-        fermerModal(team === 'Rouge' ? 'myModal' : 'myModal1');
-        displayWarriors();
-    } else {
-        alert(`Pas assez de ressources pour entraîner le ${warrior.nom}`);
-    }
-}
-
+// Fonction pour afficher les guerriers
 function displayWarriors() {
+    // Efface les cases
     for (let i = 0; i < 5; i++) {
-        document.getElementById(`square-${i}`).innerHTML = '';
+        const square = document.getElementById(`square-${i}`);
+        if (square) {
+            square.innerHTML = '';
+        }
     }
 
+    let totalWarriors = 0;
+
+    // Ajoute les guerriers et compte le nombre total
     for (const [team, teamWarriors] of Object.entries(warriors)) {
         teamWarriors.forEach(warrior => {
             if (warrior.ready) {
+                totalWarriors++;
                 const square = document.getElementById(`square-${warrior.position}`);
-                const img = document.createElement('img');
+                if (square) {
+                    const img = document.createElement('img');
 
-                switch (warrior.nom) {
-                    case 'Chef Nain':
-                        img.src = (team === 'Rouge') ? 'images/red.png' : 'images/3.png';
-                        break;
-                    case 'Nain':
-                        img.src = (team === 'Rouge') ? 'images/4.png' : 'images/5.png';
-                        break;
-                    case 'Chef Elfe':
-                        img.src = (team === 'Rouge') ? 'images/8.png' : 'images/9.png';
-                        break;
-                    case 'Elfe':
-                        img.src = (team === 'Rouge') ? 'images/6.png' : 'images/7.png';
-                        break;
-                    default:
-                        img.src = '';
+                    switch (warrior.nom) {
+                        case 'Chef Nain':
+                            img.src = (team === 'Rouge') ? 'images/red.png' : 'images/3.png';
+                            break;
+                        case 'Nain':
+                            img.src = (team === 'Rouge') ? 'images/4.png' : 'images/5.png';
+                            break;
+                        case 'Chef Elfe':
+                            img.src = (team === 'Rouge') ? 'images/8.png' : 'images/9.png';
+                            break;
+                        case 'Elfe':
+                            img.src = (team === 'Rouge') ? 'images/6.png' : 'images/7.png';
+                            break;
+                        default:
+                            img.src = '';
+                    }
+                    img.alt = warrior.nom;
+                    img.classList.add('icon');
+                    square.appendChild(img);
                 }
-                img.alt = warrior.nom;
-                img.classList.add('icon', 'warrior-image'); // Ajoutez une classe spécifique pour les images des guerriers
-                square.appendChild(img);
             }
         });
     }
+
+    // Ajuste la position du tableau en fonction du nombre total de guerriers
+    const table = document.getElementById('myTable');
+    if (table) {
+        if (totalWarriors > 6) {
+            table.style.top = '570px';
+        } else if (totalWarriors > 4) {
+            table.style.top = '580px';
+        } else {
+            table.style.top = '590px';
+        }
+    }
 }
 
-
-// Ajoutez une variable pour garder une trace de l'état du jeu
-
+// Variable pour garder une trace de l'état du jeu
 let gameStarted = false;
+
+// Fonction pour exécuter un tour de jeu
+let resourceCountRed = { Rouge: 3 };
+let resourceCountBlue = { Bleu: 3 };
+
+
+
 function playTurn() {
     const bluesReady = warriors['Bleu'].some(warrior => warrior.ready);
     const redsReady = warriors['Rouge'].some(warrior => warrior.ready);
 
     if (!gameStarted) {
         if (!bluesReady && !redsReady) {
+            // Affiche un message si aucune équipe n'est prête
             Toastify({
                 text: "Les guerriers des deux châteaux ne sont pas prêts à battre !",
                 duration: 2000,
@@ -185,6 +196,7 @@ function playTurn() {
         }
 
         if (!bluesReady) {
+            // Affiche un message si l'équipe bleue n'est pas prête
             Toastify({
                 text: "Les guerriers du château Bleu ne sont pas prêts à battre !",
                 duration: 3000,
@@ -196,6 +208,7 @@ function playTurn() {
         }
 
         if (!redsReady) {
+            // Affiche un message si l'équipe rouge n'est pas prête
             Toastify({
                 text: "Les guerriers du château Rouge ne sont pas prêts à battre !",
                 duration: 3000,
@@ -209,11 +222,17 @@ function playTurn() {
         gameStarted = true;
     }
 
+    // Déplace les guerriers et gère les combats
     moveWarriors();
     battle();
 
+    // Incrémente les ressources après les actions
+   
+    updateResourcesDisplay();
+
     const winningTeam = determineWinningTeam();
     if (winningTeam) {
+        // Affiche un message si une équipe a gagné
         Toastify({
             text: `Les guerriers du château ${winningTeam} ont gagné !`,
             duration: 5000,
@@ -223,7 +242,7 @@ function playTurn() {
         }).showToast();
         clearInterval(playTurn);
 
-        // Hide Train and Play Turn buttons
+        // Cache les boutons d'entraînement et de tour de jeu
         document.getElementById("btn1").style.display = "none";
         document.getElementById("btn2").style.display = "none";
         document.getElementById("btn-jeux").style.display = "none";
@@ -232,9 +251,9 @@ function playTurn() {
         const bluesOnLastSquare = warriors['Bleu'].some(warrior => warrior.position === 0);
 
         if (redsOnLastSquare && bluesOnLastSquare) {
-            // Both teams reached the last square without encountering opponents
+            // Les deux équipes ont atteint le dernier carré en même temps
             Toastify({
-                text: "Match nul ! Aucun guerrier n'a rencontré d'adversaire.",
+                text: "Match nul ! Les deux équipes ont atteint le dernier carré en même temps.",
                 duration: 5000,
                 close: true,
                 gravity: "top",
@@ -242,7 +261,7 @@ function playTurn() {
             }).showToast();
             clearInterval(playTurn);
         } else if (redsOnLastSquare) {
-            // Red team reached the last square without encountering opponents
+            // L'équipe Rouge a atteint le dernier carré sans rencontrer d'adversaires
             Toastify({
                 text: "Les guerriers du château Rouge ont gagné !",
                 duration: 5000,
@@ -251,13 +270,8 @@ function playTurn() {
                 position: "center"
             }).showToast();
             clearInterval(playTurn);
-
-            // Hide Train and Play Turn buttons
-            document.getElementById("btn1").style.display = "none";
-            document.getElementById("btn2").style.display = "none";
-            document.getElementById("btn-jeux").style.display = "none";
         } else if (bluesOnLastSquare) {
-            // Blue team reached the last square without encountering opponents
+            // L'équipe Bleue a atteint le dernier carré sans rencontrer d'adversaires
             Toastify({
                 text: "Les guerriers du château Bleu ont gagné !",
                 duration: 5000,
@@ -267,7 +281,7 @@ function playTurn() {
             }).showToast();
             clearInterval(playTurn);
 
-            // Hide Train and Play Turn buttons
+            // Cache les boutons d'entraînement et de tour de jeu
             document.getElementById("btn1").style.display = "none";
             document.getElementById("btn2").style.display = "none";
             document.getElementById("btn-jeux").style.display = "none";
@@ -276,14 +290,43 @@ function playTurn() {
 }
 
 
+// Fonction pour mettre à jour l'affichage des ressources
+// Fonction pour mettre à jour l'affichage des ressources
+function updateResourcesDisplay() {
+    const resourceCountRed = document.getElementById("resourceCountRed");
+    const resourceCountBlue = document.getElementById("resourceCountBlue");
+    
+    const resourceCountRedValue = parseInt(resourceCountRed.textContent);
+    const resourceCountBlueValue = parseInt(resourceCountBlue.textContent);
+
+    resourceCountRed.innerText = resourceCountRedValue + 1;
+    resourceCountBlue.innerText = resourceCountBlueValue + 1;
+}
 
 
 
+function trainWarriors(warrior, team) {
+    const resourceCountElement = document.getElementById(team === 'Rouge' ? 'resourceCountRed' : 'resourceCountBlue');
+    let resourceCount = parseInt(resourceCountElement.textContent);
 
+    if (resourceCount >= warrior.coutEntrainement) {
+        resourceCount -= warrior.coutEntrainement;
+        resourceCountElement.textContent = resourceCount;
 
+        warrior.ready = true;
+        warrior.position = (team === 'Rouge') ? 0 : 4; // Définit la position initiale
+        warriors[team].push(warrior);
 
+        fermerModal(team === 'Rouge' ? 'myModal' : 'myModal1');
+        displayWarriors();
 
+      
+    } else {
+        alert(`Pas assez de ressources pour entraîner le ${warrior.nom}`);
+    }
+}
 
+// Fonction pour déplacer les guerriers
 function moveWarriors() {
     for (const warrior of warriors['Rouge']) {
         const enemiesAtPosition = warriors['Bleu'].filter(w => w.position === warrior.position);
@@ -302,6 +345,7 @@ function moveWarriors() {
     displayWarriors();
 }
 
+// Fonction pour gérer les combats
 function battle() {
     const positionBattles = {};
 
@@ -346,6 +390,7 @@ function battle() {
     displayWarriors();
 }
 
+// Fonction pour déterminer l'équipe gagnante
 function determineWinningTeam() {
     const lastSquareRed = 4; // Dernier carreau du camp Rouge
     const lastSquareBlue = 0; // Dernier carreau du camp Bleu
@@ -362,39 +407,22 @@ function determineWinningTeam() {
     return null;
 }
 
+// Fonction pour entraîner les guerriers
+//let totalResources = 3;
 
 
 
-
-
-function trainWarriors() {
-
-}
-
-function trainWarriors(warrior, team) {
-    const resourceCountElement = document.getElementById(team === 'Rouge' ? 'resourceCountRed' : 'resourceCountBlue');
-    let resourceCount = parseInt(resourceCountElement.textContent);
-
-    if (resourceCount >= warrior.coutEntrainement) {
-        resourceCount -= warrior.coutEntrainement;
-        resourceCountElement.textContent = resourceCount;
-
-        warrior.ready = true;
-        warriors[team].push(warrior);
-
-        fermerModal(team === 'Rouge' ? 'myModal' : 'myModal1');
-        displayWarriors();
-    } else {
-        alert(`Pas assez de ressources pour entraîner le ${warrior.nom}`);
-    }
-}
-
-document.getElementById('mute').addEventListener('click', function () {
-    var audio = document.getElementById('myAudio');
-    if (audio.paused) {
-        audio.play();
-    } else {
-        audio.pause();
-        audio.currentTime = 0; // Réinitialise l'audio au début
+// Gestion de l'audio
+document.addEventListener("DOMContentLoaded", function () {
+    const muteButton = document.getElementById('mute');
+    if (muteButton) {
+        muteButton.addEventListener('click', function () {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+                audio.currentTime = 0; // Réinitialise l'audio au début
+            }
+        });
     }
 });

@@ -1,6 +1,6 @@
 body{
 
-    background-image: url("images/chateau.png");
+    background-image: url("images/chateau.png") ;
    background-size: cover; /* Ajustement de la taille pour couvrir la totalité du body */
     text-align: center;
     background-repeat: no-repeat;
@@ -44,7 +44,7 @@ body{
 }
 
 #myTable .icon {
-  transform: rotateX(319deg) rotateY(20deg) skew(0deg, 53deg) rotateZ(320deg); /* Transformation inverse pour les images des guerriers */
+  transform: rotateX(332deg) rotateY(20deg) skew(0deg, 53deg) rotateZ(320deg); /* Transformation inverse pour les images des guerriers */
   position: relative; /* Position relative pour permettre le positionnement relatif des guerriers */
   display: inline-block; /* Affichage en ligne pour empêcher la superposition */
   margin: 0; /* Supprime les marges pour un alignement précis */
