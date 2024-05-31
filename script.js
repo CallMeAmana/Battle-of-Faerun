@@ -96,12 +96,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Fonctions d'affichage des images et des modales
 function afficherImagesrouge() {
+    
     openModal('myModal');
+
 }
 
 function afficherImagesbleu() {
+   
     openModal('myModal1');
 }
+
 
 function openModal(modalId) {
     document.getElementById(modalId).style.display = "block";
@@ -111,6 +115,123 @@ function fermerModal(modalId) {
     document.getElementById(modalId).style.display = "none";
 }
 
+
+
+
+// Variable pour garder une trace de l'état du jeu
+let gameStarted = false;
+
+// Fonction pour exécuter un tour de jeu
+let resourceCountRed = { Rouge: 3 };
+let resourceCountBlue = { Bleu: 3 };
+
+
+
+function playTurn() {
+    const redsReady = warriors['Rouge'].some(warrior => warrior.ready);
+    const bluesReady = warriors['Bleu'].some(warrior => warrior.ready);
+
+    const redsWaiting = trainingQueueRed.length > 0;
+    const bluesWaiting = trainingQueueBlue.length > 0;
+
+    const redResources = parseInt(document.getElementById('resourceCountRed').textContent);
+    const blueResources = parseInt(document.getElementById('resourceCountBlue').textContent);
+
+    if (redsWaiting && redsReady && redResources > 0) {
+        executeTurn();
+    }
+
+    if (bluesWaiting && bluesReady && blueResources > 0) {
+        executeTurn();
+    }
+}
+
+function executeTurn() {
+    // Déplacer les guerriers et gérer les combats
+    moveWarriors();
+    battle();
+
+    // Incrémenter les ressources après les actions
+    updateResourcesDisplay();
+
+    // Vérifier s'il y a une équipe gagnante
+    const winningTeam = determineWinningTeam();
+    if (winningTeam) {
+        // Affiche un message si une équipe a gagné
+        Toastify({
+            text: `Les guerriers du château ${winningTeam} ont gagné !`,
+            duration: 5000,
+            close: true,
+            gravity: "top",
+            position: "center"
+        }).showToast();
+        clearInterval(playTurn);
+
+        // Cacher les boutons d'entraînement et de tour de jeu
+        document.getElementById("btn1").style.display = "none";
+        document.getElementById("btn2").style.display = "none";
+        document.getElementById("btn-jeux").style.display = "none";
+    } else {
+        const redsOnLastSquare = warriors['Rouge'].some(warrior => warrior.position === 4);
+        const bluesOnLastSquare = warriors['Bleu'].some(warrior => warrior.position === 0);
+
+        if (redsOnLastSquare && bluesOnLastSquare) {
+            // Les deux équipes ont atteint le dernier carré en même temps
+            Toastify({
+                text: "Match nul ! Les deux équipes ont atteint le dernier carré en même temps.",
+                duration: 5000,
+                close: true,
+                gravity: "top",
+                position: "center"
+            }).showToast();
+            clearInterval(playTurn);
+        } else if (redsOnLastSquare) {
+            // L'équipe Rouge a atteint le dernier carré sans rencontrer d'adversaires
+            Toastify({
+                text: "Les guerriers du château Rouge ont gagné !",
+                duration: 5000,
+                close: true,
+                gravity: "top",
+                position: "center"
+            }).showToast();
+            clearInterval(playTurn);
+        } else if (bluesOnLastSquare) {
+            // L'équipe Bleue a atteint le dernier carré sans rencontrer d'adversaires
+            Toastify({
+                text: "Les guerriers du château Bleu ont gagné !",
+                duration: 5000,
+                close: true,
+                gravity: "top",
+                position: "center"
+            }).showToast();
+            clearInterval(playTurn);
+
+            // Cacher les boutons d'entraînement et de tour de jeu
+            document.getElementById("btn1").style.display = "none";
+            document.getElementById("btn2").style.display = "none";
+            document.getElementById("btn-jeux").style.display = "none";
+        }
+    }
+}
+
+
+
+
+// Fonction pour mettre à jour l'affichage des ressources
+
+function updateResourcesDisplay() {
+    const resourceCountRed = document.getElementById("resourceCountRed");
+    const resourceCountBlue = document.getElementById("resourceCountBlue");
+    
+    const resourceCountRedValue = parseInt(resourceCountRed.textContent);
+    const resourceCountBlueValue = parseInt(resourceCountBlue.textContent);
+
+    resourceCountRed.innerText = resourceCountRedValue + 1;
+    resourceCountBlue.innerText = resourceCountBlueValue + 1;
+}
+
+let trainingQueueRed = []; // File d'attente pour les demandes d'entraînement de l'équipe Rouge
+let trainingQueueBlue = []; // File d'attente pour les demandes d'entraînement de l'équipe Bleue
 // Fonction pour afficher les guerriers
 function displayWarriors() {
     // Efface les cases
@@ -168,163 +289,172 @@ function displayWarriors() {
         }
     }
 }
-
-// Variable pour garder une trace de l'état du jeu
-let gameStarted = false;
-
-// Fonction pour exécuter un tour de jeu
-let resourceCountRed = { Rouge: 3 };
-let resourceCountBlue = { Bleu: 3 };
-
-
-
-function playTurn() {
-    const bluesReady = warriors['Bleu'].some(warrior => warrior.ready);
-    const redsReady = warriors['Rouge'].some(warrior => warrior.ready);
-
-    if (!gameStarted) {
-        if (!bluesReady && !redsReady) {
-            // Affiche un message si aucune équipe n'est prête
-            Toastify({
-                text: "Les guerriers des deux châteaux ne sont pas prêts à battre !",
-                duration: 2000,
-                close: true,
-                gravity: "top",
-                position: "center"
-            }).showToast();
-            return;
-        }
-
-        if (!bluesReady) {
-            // Affiche un message si l'équipe bleue n'est pas prête
-            Toastify({
-                text: "Les guerriers du château Bleu ne sont pas prêts à battre !",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "center"
-            }).showToast();
-            return;
-        }
-
-        if (!redsReady) {
-            // Affiche un message si l'équipe rouge n'est pas prête
-            Toastify({
-                text: "Les guerriers du château Rouge ne sont pas prêts à battre !",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "center"
-            }).showToast();
-            return;
-        }
-
-        gameStarted = true;
-    }
-
-    // Déplace les guerriers et gère les combats
-    moveWarriors();
-    battle();
-
-    // Incrémente les ressources après les actions
-   
-    updateResourcesDisplay();
-
-    const winningTeam = determineWinningTeam();
-    if (winningTeam) {
-        // Affiche un message si une équipe a gagné
-        Toastify({
-            text: `Les guerriers du château ${winningTeam} ont gagné !`,
-            duration: 5000,
-            close: true,
-            gravity: "top",
-            position: "center"
-        }).showToast();
-        clearInterval(playTurn);
-
-        // Cache les boutons d'entraînement et de tour de jeu
-        document.getElementById("btn1").style.display = "none";
-        document.getElementById("btn2").style.display = "none";
-        document.getElementById("btn-jeux").style.display = "none";
-    } else {
-        const redsOnLastSquare = warriors['Rouge'].some(warrior => warrior.position === 4);
-        const bluesOnLastSquare = warriors['Bleu'].some(warrior => warrior.position === 0);
-
-        if (redsOnLastSquare && bluesOnLastSquare) {
-            // Les deux équipes ont atteint le dernier carré en même temps
-            Toastify({
-                text: "Match nul ! Les deux équipes ont atteint le dernier carré en même temps.",
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "center"
-            }).showToast();
-            clearInterval(playTurn);
-        } else if (redsOnLastSquare) {
-            // L'équipe Rouge a atteint le dernier carré sans rencontrer d'adversaires
-            Toastify({
-                text: "Les guerriers du château Rouge ont gagné !",
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "center"
-            }).showToast();
-            clearInterval(playTurn);
-        } else if (bluesOnLastSquare) {
-            // L'équipe Bleue a atteint le dernier carré sans rencontrer d'adversaires
-            Toastify({
-                text: "Les guerriers du château Bleu ont gagné !",
-                duration: 5000,
-                close: true,
-                gravity: "top",
-                position: "center"
-            }).showToast();
-            clearInterval(playTurn);
-
-            // Cache les boutons d'entraînement et de tour de jeu
-            document.getElementById("btn1").style.display = "none";
-            document.getElementById("btn2").style.display = "none";
-            document.getElementById("btn-jeux").style.display = "none";
-        }
+// Fonction pour ajouter une demande d'entraînement à la file d'attente
+function addToTrainingQueue(warriorIndex, team) {
+    if (team === 'Rouge') {
+        trainingQueueRed.push(warriorIndex);
+        console.log("red",trainingQueueRed);
+    } else if (team === 'Bleu') {
+        trainingQueueBlue.push(warriorIndex);
+        console.log("bleu",trainingQueueBlue);
     }
 }
 
+// Fonction pour entraîner les guerriers en attente dans la file d'attente
+function trainWarriorsFromQueue(team) {
+    let trainingQueue;
+    if (team === 'Rouge') {
+        trainingQueue = trainingQueueRed;
+    } else if (team === 'Bleu') {
+        trainingQueue = trainingQueueBlue;
+    }
 
-// Fonction pour mettre à jour l'affichage des ressources
-// Fonction pour mettre à jour l'affichage des ressources
-function updateResourcesDisplay() {
-    const resourceCountRed = document.getElementById("resourceCountRed");
-    const resourceCountBlue = document.getElementById("resourceCountBlue");
+    while (trainingQueue.length > 0) {
+        const warriorIndex = trainingQueue[0]; // Prend le premier guerrier de la file d'attente
+        let warrior;
+switch (warriorIndex) {
+    case 1:
+        warrior = new ChefNain();
+        break;
+    case 2:
+        warrior = new Nain();
+        break;
+    case 3:
+        warrior = new ChefElfe();
+        break;
+    case 4:
+        warrior = new Elfe();
+        break;
+
     
-    const resourceCountRedValue = parseInt(resourceCountRed.textContent);
-    const resourceCountBlueValue = parseInt(resourceCountBlue.textContent);
-
-    resourceCountRed.innerText = resourceCountRedValue + 1;
-    resourceCountBlue.innerText = resourceCountBlueValue + 1;
 }
 
-
-
-function trainWarriors(warrior, team) {
+        trainWarriors(warriorIndex, team);
+        if (warrior.ready) {
+            trainWarriors(warriorIndex, team);
+            trainingQueue.shift(); // Retire le guerrier de la file d'attente
+        } else {
+            break; // Si le guerrier n'est pas prêt, sortir de la boucle
+        } 
+    }
+    trainWarriorsFromQueue(team);
+    
+}
+function trainWarriors(warriorIndex, team) {
     const resourceCountElement = document.getElementById(team === 'Rouge' ? 'resourceCountRed' : 'resourceCountBlue');
     let resourceCount = parseInt(resourceCountElement.textContent);
+    let warrior;
+
+    switch (warriorIndex) {
+        case 1:
+            warrior = new ChefNain();
+            break;
+        case 2:
+            warrior = new Nain();
+            break;
+        case 3:
+            warrior = new ChefElfe();
+            break;
+        case 4:
+            warrior = new Elfe();
+            break;
+    }
 
     if (resourceCount >= warrior.coutEntrainement) {
+        // Entraînement complet
         resourceCount -= warrior.coutEntrainement;
         resourceCountElement.textContent = resourceCount;
-
         warrior.ready = true;
         warrior.position = (team === 'Rouge') ? 0 : 4; // Définit la position initiale
         warriors[team].push(warrior);
 
-        fermerModal(team === 'Rouge' ? 'myModal' : 'myModal1');
-        displayWarriors();
-
-      
+        // Afficher un message indiquant que l'entraînement est réussi
+        Toastify({
+            text: `Entraînement de ${warrior.nom} OK (-${warrior.coutEntrainement} ressources)`,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center"
+        }).showToast();
+        
+        // Ajouter le guerrier à la file d'attente
+        addToTrainingQueue(warriorIndex, team);
+    } else if (resourceCount > 0) {
+        // Entraînement partiel
+        const coutManquant = warrior.coutEntrainement - resourceCount;
+        resourceCountElement.textContent = 0;
+        Toastify({
+            text: `Entraînement de ${warrior.nom} PARTIEL (-${resourceCount} ressources, ${coutManquant} ressources manquantes)`,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center"
+        }).showToast();
+        
+        // Ajouter le guerrier à la file d'attente
+        addToTrainingQueue(warriorIndex, team);
     } else {
-        alert(`Pas assez de ressources pour entraîner le ${warrior.nom}`);
+        // Ressources insuffisantes
+        Toastify({
+            text: `Impossible de s'entraîner ${warrior.nom} (ressources insuffisantes)`,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center"
+        }).showToast();
+        
+        // Ajouter le guerrier à la file d'attente
+        addToTrainingQueue(warriorIndex, team);
     }
 }
+
+
+
+
+function afficherQueueNames(team) {
+    let trainingQueue;
+    if (team === 'Rouge') {
+        trainingQueue = trainingQueueRed;
+    } else if (team === 'Bleu') {
+        trainingQueue = trainingQueueBlue;
+    }
+
+    if (trainingQueue.length > 0) {
+        const toastContent = trainingQueue.map(warriorIndex => {
+            switch (warriorIndex) {
+                case 1:
+                    return 'Chef Nain';
+                case 2:
+                    return 'Nain';
+                    case 3:
+                    return 'Chef Elfe';
+                    case 4:
+                    return 'Elfe';
+                // Ajoutez des cas pour d'autres guerriers si nécessaire
+                default:
+                    return 'Guerrier inconnu';
+            }
+        }).join(', ');
+
+        Toastify({
+            text: `File d'attente (${team}): ${toastContent}`,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center"
+        }).showToast();
+    } else {
+        Toastify({
+            text: "File d'attente vide !",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center"
+        }).showToast();
+    }
+}
+
+
 
 // Fonction pour déplacer les guerriers
 function moveWarriors() {

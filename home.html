@@ -14,7 +14,7 @@
         <img id="mute" src="images/mute.png" style="cursor: pointer;">
         
     </button>
-    <button onclick="playTurn()" id="btn-jeux" >Jouer un tour </button>
+    <button onclick="executeTurn()" id="btn-jeux" >Jouer un tour </button>
     <table id="myTable">
         <tr>
             <td class="square" id="square-0"></td>
@@ -27,8 +27,8 @@
     <div id="chefnainImage">
         <img src="images/red.png" alt="Nain" class="icon">
     </div>
-    <button onclick="afficherImagesrouge()" id="btn1" >Entrainer</button>
-    <button onclick="afficherImagesbleu()" id="btn2" >Entrainer</button>
+    <button onmouseover="afficherQueueNames('Rouge')" onclick="afficherImagesrouge()" id="btn1" >Entrainer</button>
+    <button onmouseover="afficherQueueNames('Bleu')" onclick="afficherImagesbleu()" id="btn2" >Entrainer</button>
 
     <!-- Modal for training red warriors -->
     <div id="myModal" class="modal">
@@ -38,25 +38,25 @@
             <h2>Nombre de ressources : <span id="resourceCountRed">3</span></h2>
             <div class="image-container">
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new ChefNain(), 'Rouge')">
+                    <button onclick="trainWarriors(1, 'Rouge')">
                         <img src="images/red.png" alt="Chef Nain" class="icon">
                     </button>
                     <label>Chef Nain (3 ressources)</label>
                 </div>
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new Nain(), 'Rouge')">
+                    <button onclick="trainWarriors(2, 'Rouge')">
                         <img src="images/4.png" alt="Nain" class="icon">
                     </button>
                     <label>Nain (1 ressource)</label>
                 </div>
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new ChefElfe(), 'Rouge')">
+                    <button onclick="trainWarriors(3, 'Rouge')">
                         <img src="images/8.png" alt="Chef Elfe" class="icon">
                     </button>
                     <label>Chef Elfe (4 ressources)</label>
                 </div>
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new Elfe(), 'Rouge')">
+                    <button onclick="trainWarriors(4, 'Rouge')">
                         <img src="images/6.png" alt="Elfe" class="icon">
                     </button>
                     <label>Elfe (2 ressources)</label>
@@ -73,25 +73,25 @@
             <h2>Nombre de ressources : <span id="resourceCountBlue">3</span></h2>
             <div class="image-container">
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new ChefNain(), 'Bleu')">
+                    <button onclick="trainWarriors(1, 'Bleu')">
                         <img src="images/3.png" alt="Chef Nain" class="icon">
                     </button>
                     <label>Chef Nain (3 ressources)</label>
                 </div>
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new Nain(), 'Bleu')">
+                    <button onclick="trainWarriors(2, 'Bleu')">
                         <img src="images/5.png" alt="Nain" class="icon">
                     </button>
                     <label>Nain (1 ressource)</label>
                 </div>
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new ChefElfe(), 'Bleu')">
+                    <button onclick="trainWarriors(3, 'Bleu')">
                         <img src="images/9.png" alt="Chef Elfe" class="icon">
                     </button>
                     <label>Chef Elfe (4 ressources)</label>
                 </div>
                 <div class="image-label-container">
-                    <button onclick="trainWarriors(new Elfe(), 'Bleu')">
+                    <button onclick="trainWarriors(4, 'Bleu')">
                         <img src="images/7.png" alt="Elfe" class="icon">
                     </button>
                     <label>Elfe (2 ressources)</label>
