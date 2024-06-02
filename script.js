@@ -24,10 +24,33 @@ class Guerrier {
     subirDegats(degats) {
         this.pv -= degats;
         if (this.pv <= 0) {
-            console.log(`${this.nom} est mort !`);
+            Toastify({
+                text: `${this.nom}  est mort !`, // Inclure le nom de l'équipe dans le texte du toast
+                duration: 4000, // Durée du toast en millisecondes
+                gravity: "top", // Positionner en haut
+                position: "center", // Centrer horizontalement
+                style: {
+                    avatar: this.image, 
+                    background: "linear-gradient(to right, #00BFFF, #FF0000)",
+                    marginTop: "200px", // Positionner à 400px du haut
+                }
+            }).showToast(); 
         } else {
-            console.log(`${this.nom} subit ${degats} de dégâts et a maintenant ${this.pv} points de vie.`);
+            Toastify({
+                text: `${this.nom} subit de dégâts et a maintenant ${this.pv} points de vie .`,
+                duration: 4000, // Durée du toast en millisecondes
+                gravity: "top", // Positionner en haut
+                position: "center", // Centrer horizontalement
+                // Afficher l'image de l'avatar
+                style: {
+                    background: "linear-gradient(to right, #00BFFF, #FF0000)",
+                    marginTop: "200px", // Positionner à 400px du haut
+                }
+            }).showToast();
         }
+    }
+    getPointDeVue() {
+        return `${this.nom} - Force: ${this.force}, PV: ${this.pv}, Coût Entrainement: ${this.coutEntrainement}`;
     }
 }
 
@@ -44,7 +67,7 @@ class Nain extends Guerrier {
 
 class ChefNain extends Guerrier {
     constructor() {
-        super("Chef Nain", 10, 100, 3, 'images/red.png');
+        super("Chef Nain", 15, 100, 3, 'images/red.png');
     }
 
     subirDegats(degats) {
@@ -54,16 +77,22 @@ class ChefNain extends Guerrier {
 
 class Elfe extends Guerrier {
     constructor() {
-        super("Elfe", 10, 100, 2, 'images/6.png');
+        super("Elfe", 20, 100, 2, 'images/6.png');
     }
 }
 
 class ChefElfe extends Guerrier {
     constructor() {
-        super("Chef Elfe", 10, 100, 4, 'images/8.png');
+        super("Chef Elfe", 30, 100, 4, 'images/8.png');
     }
 }
+let gameStarted = false;
 
+// Fonction pour exécuter un tour de jeu
+let resourceCountRed = { Rouge: 3 };
+let resourceCountBlue = { Bleu: 3 };
+let trainingQueueRed = []; // File d'attente pour les demandes d'entraînement de l'équipe Rouge
+let trainingQueueBlue = []; // File d'attente pour les demandes d'entraînement de l'équipe Bleue
 // Initialisation des guerriers et des positions
 const warriors = {
     Rouge: [],
@@ -71,28 +100,8 @@ const warriors = {
 };
 
 
+const table = document.getElementById('myTable');
 
-document.addEventListener("DOMContentLoaded", function () {
-    var titre2 = document.getElementById("titre2");
-    var titre1 = document.getElementById("titre1");
-    var table = document.getElementById("myTable");
-    var btn1 = document.getElementById("btn1");
-    var btn2 = document.getElementById("btn2");
-    var btnJeux = document.getElementById("btn-jeux");
-
-    if (titre2 && table && titre1 && btn1 && btn2 && btnJeux) {
-        titre2.addEventListener("click", function () {
-            table.style.display = "table";
-            titre1.style.display = "none";
-            titre2.style.display = "none";
-            btn1.style.display = "block";
-            btn2.style.display = "block";
-            btnJeux.style.display = "block";
-        });
-
-        btnJeux.addEventListener("click", () => setInterval(playTurn, 1000));
-    }
-});
 
 // Fonctions d'affichage des images et des modales
 function afficherImagesrouge() {
@@ -119,11 +128,6 @@ function fermerModal(modalId) {
 
 
 // Variable pour garder une trace de l'état du jeu
-let gameStarted = false;
-
-// Fonction pour exécuter un tour de jeu
-let resourceCountRed = { Rouge: 3 };
-let resourceCountBlue = { Bleu: 3 };
 
 
 
@@ -131,6 +135,8 @@ function playTurn() {
     const redsReady = warriors['Rouge'].some(warrior => warrior.ready);
     const bluesReady = warriors['Bleu'].some(warrior => warrior.ready);
 
+
+    
     const redsWaiting = trainingQueueRed.length > 0;
     const bluesWaiting = trainingQueueBlue.length > 0;
 
@@ -171,6 +177,8 @@ function executeTurn() {
         document.getElementById("btn1").style.display = "none";
         document.getElementById("btn2").style.display = "none";
         document.getElementById("btn-jeux").style.display = "none";
+        document.getElementById("myModal").style.display = "none";
+        document.getElementById("myModal1").style.display = "none";
     } else {
         const redsOnLastSquare = warriors['Rouge'].some(warrior => warrior.position === 4);
         const bluesOnLastSquare = warriors['Bleu'].some(warrior => warrior.position === 0);
@@ -185,6 +193,13 @@ function executeTurn() {
                 position: "center"
             }).showToast();
             clearInterval(playTurn);
+
+            // Cacher les boutons d'entraînement et de tour de jeu
+            document.getElementById("btn1").style.display = "none";
+            document.getElementById("btn2").style.display = "none";
+            document.getElementById("btn-jeux").style.display = "none";
+            document.getElementById("myModal").style.display = "none";
+        document.getElementById("myModal1").style.display = "none";
         } else if (redsOnLastSquare) {
             // L'équipe Rouge a atteint le dernier carré sans rencontrer d'adversaires
             Toastify({
@@ -195,6 +210,13 @@ function executeTurn() {
                 position: "center"
             }).showToast();
             clearInterval(playTurn);
+
+            // Cacher les boutons d'entraînement et de tour de jeu
+            document.getElementById("btn1").style.display = "none";
+            document.getElementById("btn2").style.display = "none";
+            document.getElementById("btn-jeux").style.display = "none";
+            document.getElementById("myModal").style.display = "none";
+        document.getElementById("myModal1").style.display = "none";
         } else if (bluesOnLastSquare) {
             // L'équipe Bleue a atteint le dernier carré sans rencontrer d'adversaires
             Toastify({
@@ -210,9 +232,12 @@ function executeTurn() {
             document.getElementById("btn1").style.display = "none";
             document.getElementById("btn2").style.display = "none";
             document.getElementById("btn-jeux").style.display = "none";
+            document.getElementById("myModal").style.display = "none";
+            document.getElementById("myModal1").style.display = "none";
         }
     }
 }
+
 
 
 
@@ -230,8 +255,7 @@ function updateResourcesDisplay() {
     resourceCountBlue.innerText = resourceCountBlueValue + 1;
 }
 
-let trainingQueueRed = []; // File d'attente pour les demandes d'entraînement de l'équipe Rouge
-let trainingQueueBlue = []; // File d'attente pour les demandes d'entraînement de l'équipe Bleue
+
 // Fonction pour afficher les guerriers
 function displayWarriors() {
     // Efface les cases
@@ -271,6 +295,19 @@ function displayWarriors() {
                     }
                     img.alt = warrior.nom;
                     img.classList.add('icon');
+                    img.addEventListener('mouseover', () => {
+                        Toastify({
+                            text: `Nom: ${warrior.nom}`+` PV: ${warrior.pv}` +` force: ${warrior.force}` ,
+                            duration: 1000, // Durée du toast en millisecondes (optionnelle)
+                            gravity: "top", // Positionner en haut
+                            position: "center", // Centrer horizontalement
+                            style: {
+                                background: "linear-gradient(to right, #00BFFF, #FF0000)",
+                                marginTop: "450px", // Positionner à 600px du haut
+                            }
+                         
+                        }).showToast(); // Afficher le toast
+                    });
                     square.appendChild(img);
                 }
             }
@@ -278,7 +315,7 @@ function displayWarriors() {
     }
 
     // Ajuste la position du tableau en fonction du nombre total de guerriers
-    const table = document.getElementById('myTable');
+   
     if (table) {
         if (totalWarriors > 6) {
             table.style.top = '570px';
@@ -367,7 +404,7 @@ function trainWarriors(warriorIndex, team) {
         warrior.ready = true;
         warrior.position = (team === 'Rouge') ? 0 : 4; // Définit la position initiale
         warriors[team].push(warrior);
-
+        displayWarriors();
         // Afficher un message indiquant que l'entraînement est réussi
         Toastify({
             text: `Entraînement de ${warrior.nom} OK (-${warrior.coutEntrainement} ressources)`,
@@ -540,7 +577,27 @@ function determineWinningTeam() {
 // Fonction pour entraîner les guerriers
 //let totalResources = 3;
 
+document.addEventListener("DOMContentLoaded", function () {
+    var titre2 = document.getElementById("titre2");
+    var titre1 = document.getElementById("titre1");
+    var table = document.getElementById("myTable");
+    var btn1 = document.getElementById("btn1");
+    var btn2 = document.getElementById("btn2");
+    var btnJeux = document.getElementById("btn-jeux");
 
+    if (titre2 && table && titre1 && btn1 && btn2 && btnJeux) {
+        titre2.addEventListener("click", function () {
+            table.style.display = "table";
+            titre1.style.display = "none";
+            titre2.style.display = "none";
+            btn1.style.display = "block";
+            btn2.style.display = "block";
+            btnJeux.style.display = "block";
+        });
+
+        btnJeux.addEventListener("click", () => setInterval(playTurn, 1000));
+    }
+});
 
 // Gestion de l'audio
 document.addEventListener("DOMContentLoaded", function () {
